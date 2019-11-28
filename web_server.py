@@ -2,8 +2,10 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import cgi
 
 from sqlalchemy.orm import sessionmaker 
+from sqlalchemy import create_engine
 from database_setup import Base, Restaurant, MenuItem, engine
 
+engine = create_engine('sqlite:///restaurantmenu.db')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind = engine)
 session = DBSession()
@@ -73,20 +75,12 @@ class WebServerHandler(BaseHTTPRequestHandler):
 
 				restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
 
-				output = ""	
-				output += "<html><body>"
+				output = "<html><body>"
 				output += "<h1>%s</h1>" % restaurant.name
-
-				output += '''
-				<form method= "PUT" enctype="multipart/form-data" 
-				  action="/restaurants/%s/edit">
-
-				  <input type="text" name="newRestaurantName"
-				  	placeholder="%s">
-			  	  <input type="submit" value="Edit">
-				</form>''' %(restaurant_id, restaurant.name)
-
-				output += '</body></html>'
+				output += "<form method='POST' enctype='multipart/form-data' action = '/restaurants/%s/edit' >" % restaurant_id
+				output += "<input name = 'newRestaurantName' type='text' placeholder = '%s' >" % restaurant.name
+				output += "<input type = 'submit' value = 'Rename'>"
+				output += "</form></body></html>"
 
 				self.wfile.write(output)
 				print self.path
@@ -116,9 +110,30 @@ class WebServerHandler(BaseHTTPRequestHandler):
 				self.send_header('Content-type', 'text/html')
 				self.send_header('Location', '/restaurants')
 				self.end_headers()
+				self.wfile.write(output)
 
 
 				return
+
+
+			if self.path.endswith("/edit"):
+				ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
+				if ctype == 'multipart/form-data':
+					fields = cgi.parse_multipart(self.rfile, pdict)
+					messagecontent = fields.get('newRestaurantName')
+					restaurantIDPath = self.path.split("/")[2]
+
+					myRestaurantQuery = session.query(Restaurant).filter_by(id=restaurantIDPath).one()
+					if myRestaurantQuery != []:
+						myRestaurantQuery.name = messagecontent[0]
+						session.add(myRestaurantQuery)
+						session.commit()
+						self.send_response(301)
+						self.send_header('Content-type', 'text/html')
+						self.send_header('Location', '/restaurants')
+						self.end_headers()
+
+				
 
 		except:
 			pass
