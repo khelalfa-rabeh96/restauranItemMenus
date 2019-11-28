@@ -1,11 +1,19 @@
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import cgi
 
+from sqlalchemy.orm import sessionmaker 
+from database_setup import Base, Restaurant, MenuItem, engine
+
+Base.metadata.bind = engine
+DBSession = sessionmaker(bind = engine)
+session = DBSession()
+
+
 class WebServerHandler(BaseHTTPRequestHandler):
 
 	def do_GET(self):
 		try:
-			if self.path.endswith('/hello'):
+			if self.path.endswith('/restaurants'):
 				self.send_response(200)
 				self.send_header('Content-type', 'text/html')
 				self.end_headers()
@@ -13,50 +21,30 @@ class WebServerHandler(BaseHTTPRequestHandler):
 				output = ""
 
 				output += "<html><body>"
-				output += "Hello!"
+				"<h3><a href = '/restaurants/new'> Make A New Restaurant </a></h3>"
 
-				output += '''<form method="POST" enctype="multipart/form-data"
-							action="/hello">
-							<h2>What would you like me to say?</h2>
-							<input name="message" type="text">
-							<input type="submit" value="Submit">
-						</form>'''
-				
+				our_restaurants = session.query(Restaurant).all()
+				output += "<ul>"
+
+				for restaurant in our_restaurants:
+					
+					output += "<li>%s</li>" % restaurant.name
+
+				output += "</ul>"	
 				output += '</body></html>'
 
 				self.wfile.write(output)
 				print output
 				return 
 
-			if self.path.endswith('/hola'):
-				self.send_response(200)
-				self.send_header('Content-type', 'text/html')
-				self.end_headers()
-
-				output = ""
-
-				output += "<html><body>"
-				output += "Hola! <a href='/hello'>Back to hello</a>"
-				
-				output += '''<form method="POST" enctype="multipart/form-data"
-							action="/hola">
-							<h2>What would you like me to say?</h2>
-							<input name="message" type="text">
-							<input type="submit" value="Submit">
-						</form>'''
-				
-				output += '</body></html>'
-
-				self.wfile.write(output)
-				print output
-				return 
+			
 
 		except IOError:
 			self.send_error(404, "File Not Found %s" % self.path)
 
 	def do_POST(self):
 		try:
-			
+
 			self.send_response(301)
 			self.send_header('Content-type', 'text/html')
 			self.end_headers()
