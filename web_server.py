@@ -32,7 +32,10 @@ class WebServerHandler(BaseHTTPRequestHandler):
 		except IOError:
 			self.send_error(404, "File Not Found %s" % self.path)
 
-	
+	def do_POST(self):
+		try:
+			ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
+			
 
 def main():
 	try:
