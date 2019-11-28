@@ -1,4 +1,5 @@
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+import cgi
 
 class WebServerHandler(BaseHTTPRequestHandler):
 
@@ -30,6 +31,8 @@ class WebServerHandler(BaseHTTPRequestHandler):
 
 		except IOError:
 			self.send_error(404, "File Not Found %s" % self.path)
+
+	
 
 def main():
 	try:
