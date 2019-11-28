@@ -12,7 +12,18 @@ class WebServerHandler(BaseHTTPRequestHandler):
 
 				output = ""
 
-				output += "<html><body>Hello!</body></html>"
+				output += "<html><body>"
+				output += "Hello!"
+
+				output += '''<form method="POST" enctype="multipart/form-data"
+							action="/hello">
+							<h2>What would you like me to say?</h2>
+							<input name="message" type="text">
+							<input type="submit" value="Submit">
+						</form>'''
+				
+				output += '</body></html>'
+
 				self.wfile.write(output)
 				print output
 				return 
@@ -24,7 +35,18 @@ class WebServerHandler(BaseHTTPRequestHandler):
 
 				output = ""
 
-				output += "<html><body>Hola! <a href='/hello'>Back to hello</a></body></html>"
+				output += "<html><body>"
+				output += "Hola! <a href='/hello'>Back to hello</a>"
+				
+				output += '''<form method="POST" enctype="multipart/form-data"
+							action="/hola">
+							<h2>What would you like me to say?</h2>
+							<input name="message" type="text">
+							<input type="submit" value="Submit">
+						</form>'''
+				
+				output += '</body></html>'
+
 				self.wfile.write(output)
 				print output
 				return 
@@ -34,10 +56,16 @@ class WebServerHandler(BaseHTTPRequestHandler):
 
 	def do_POST(self):
 		try:
+
 			ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
 			if ctype == 'multipart/form-data':
 				fields = cgi.parse_multipart(self.rfile, pdict)
 				message_content = fields.get('message')
+
+		except:
+			pass
+
+
 
 def main():
 	try:
