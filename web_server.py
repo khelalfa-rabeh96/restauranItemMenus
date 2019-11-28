@@ -35,7 +35,9 @@ class WebServerHandler(BaseHTTPRequestHandler):
 	def do_POST(self):
 		try:
 			ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
-			
+			if ctype == 'multipart/form-data':
+				fields = cgi.parse_multipart(self.rfile, pdict)
+				message_content = fields.get('message')
 
 def main():
 	try:
