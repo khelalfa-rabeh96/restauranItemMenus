@@ -64,6 +64,34 @@ class WebServerHandler(BaseHTTPRequestHandler):
 				print output
 				return 
 
+			if self.path.endswith('/edit'):
+				self.send_response(200)
+				self.send_header('Content-type', 'text/html')
+				self.end_headers()
+
+				restaurant_id = int(self.path.split('/')[2])
+
+				restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
+
+				output = ""	
+				output += "<html><body>"
+				output += "<h1>%s</h1>" % restaurant.name
+
+				output += '''
+				<form method= "PUT" enctype="multipart/form-data" 
+				  action="/restaurants/%s/edit">
+
+				  <input type="text" name="newRestaurantName"
+				  	placeholder="%s">
+			  	  <input type="submit" value="Edit">
+				</form>''' %(restaurant_id, restaurant.name)
+
+				output += '</body></html>'
+
+				self.wfile.write(output)
+				print self.path
+				return 
+
 
 			
 
