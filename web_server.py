@@ -28,8 +28,10 @@ class WebServerHandler(BaseHTTPRequestHandler):
 
 				for restaurant in our_restaurants:
 					
-					output += "<li>%s</li>" % restaurant.name
-
+					output += "<li>" 
+					output += "<h4>%s</h4>" % restaurant.name
+					output += "<a href='restaurants/%s/edit'>Edit</a><br>" % restaurant.id
+					output += "<a href='restaurants/%s/delete'>Delete</a>" % restaurant.id
 				output += "</ul>"	
 				output += '</body></html>'
 
