@@ -63,6 +63,8 @@ class WebServerHandler(BaseHTTPRequestHandler):
 				self.wfile.write(output)
 				print output
 				return 
+
+
 			
 
 		except IOError:
@@ -70,31 +72,26 @@ class WebServerHandler(BaseHTTPRequestHandler):
 
 	def do_POST(self):
 		try:
+			if self.path.endswith('restaurants/new'):
+				
+				ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
+				if ctype == 'multipart/form-data':
+					fields = cgi.parse_multipart(self.rfile, pdict)
+					newRestaurantName  = fields.get('newRestaurantName')[0]
 
-			self.send_response(301)
-			self.send_header('Content-type', 'text/html')
-			self.end_headers()
+				
+				newRestaurant = Restaurant(name = newRestaurantName)
+				session.add(newRestaurant)
+				session.commit()
 
-			ctype, pdict = cgi.parse_header(self.headers.getheader('content-type'))
-			if ctype == 'multipart/form-data':
-				fields = cgi.parse_multipart(self.rfile, pdict)
-				message_content = fields.get('message')
+				self.send_response(301)
+				self.send_header('Content-type', 'text/html')
+				self.send_header('Location', '/restaurants')
+				self.end_headers()
 
-			output = ""
-			output += "<html><body>"
-			output += "<h2> Okay, how about this: </h2>"
-			output += "<h1> %s </h1>" % message_content[0]
 
-			output += '''<form method="POST" enctype="multipart/form-data"
-							action="/hello">
-							<h2>What would you like me to say?</h2>
-							<input name="message" type="text">
-							<input type="submit" value="Submit">
-						</form>'''
-			output += '</body></html>'
+				return
 
-			self.wfile.write(output)
-			print output
 		except:
 			pass
 
