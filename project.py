@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for
 app = Flask(__name__)
 
 from sqlalchemy import create_engine
@@ -22,6 +22,15 @@ def restauranMenu(restaurant_id):
 	items = session.query(MenuItem).filter_by(restaurant_id = restaurant_id).all()
 
 	return render_template('menu.html', restaurant = restaurant, items = items)
+
+@app.route('/restaurants/<int:restaurant_id>/<int:menu_id>/edit')
+def editMenu(restaurant_id, menu_id):
+	return "You want to edit this menu"
+
+@app.route('/restaurants/<int:restaurant_id>/<int:menu_id>/delete')
+def deleteMenu(restaurant_id, menu_id):
+	return "You want to delete this menu"
+
 
 if __name__ == '__main__':
 	app.debug = True
