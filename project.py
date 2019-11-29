@@ -31,11 +31,23 @@ def newRestaurant():
 	else:
 		return render_template('new_restaurant.html')
 
-	return "Creating a new restaurant"
 
 @app.route('/restaurants/<int:restaurant_id>/edit')
 def editRestaurant(restaurant_id):
-	return "Modifying the resutaurant who has id=%s"%restaurant_id
+	restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
+	
+	if request.method == 'POST':
+		name = request.form['name']
+		if name:
+		
+			restaurant.name = name
+			session.add(restaurant)
+			session.commit()
+
+		return redirect(url_for('showRestaurants'))
+
+	else:
+		return render_template('editRestaurant.html', restaurant = restaurant)
 
 @app.route('/restaurants/<int:restaurant_id>/delete')
 def deleteRestaurant(restaurant_id):
