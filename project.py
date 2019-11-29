@@ -22,6 +22,11 @@ def showRestaurants():
 
 	return output
 
+@app.route('/restaurants/new')
+def newRestaurant():
+	return "Creating a new restaurant"
+
+
 
 #Making an API Endpoint
 @app.route('/restaurants/<int:restaurant_id>/menu/JSON')
