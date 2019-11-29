@@ -26,6 +26,9 @@ def showRestaurants():
 def newRestaurant():
 	return "Creating a new restaurant"
 
+@app.route('/restaurants/<int:restaurant_id>/edit')
+def editRestaurant(restaurant_id):
+	return "Modifying the resutaurant who has id=%s"%restaurant_id
 
 
 #Making an API Endpoint
