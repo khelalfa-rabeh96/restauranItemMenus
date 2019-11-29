@@ -16,11 +16,7 @@ session = DBsession()
 def showRestaurants():
 	
 	all_restaurants = session.query(Restaurant).all()
-	output = ""
-	for restaurant in all_restaurants:
-		output += "<p>%s</p>" %restaurant.name
-
-	return output
+	return render_template('restaurants.html', all_restaurants = all_restaurants)
 
 @app.route('/restaurants/new')
 def newRestaurant():
