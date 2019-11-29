@@ -30,6 +30,10 @@ def newRestaurant():
 def editRestaurant(restaurant_id):
 	return "Modifying the resutaurant who has id=%s"%restaurant_id
 
+@app.route('/restaurants/<int:restaurant_id>/delete')
+def deleteRestaurant(restaurant_id):
+	return "Deleting the resutaurant who has id=%s"%restaurant_id
+
 
 #Making an API Endpoint
 @app.route('/restaurants/<int:restaurant_id>/menu/JSON')
