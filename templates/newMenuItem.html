@@ -1,0 +1,13 @@
+<html>
+<body>
+	<h1>New Menu Item</h1>
+
+	<form method = "POST" action="{{ url_for('newMenuItem', restaurant_id = restaurant_id) }}" 
+		
+		<p>Name:</p>
+		<input type="text" name="name">
+		<input type="submit" value="create">
+
+	</form>
+</body>
+</html>
