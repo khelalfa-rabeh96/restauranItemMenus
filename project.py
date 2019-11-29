@@ -12,9 +12,16 @@ DBsession = sessionmaker(bind=engine)
 session = DBsession()
 
 @app.route('/')
-@app.route('/hello')
-def HelloWorld():
-	return "Hello World"
+@app.route('/restaurants')
+def showRestaurants():
+	
+	all_restaurants = session.query(Restaurant).all()
+	output = ""
+	for restaurant in all_restaurants:
+		output += "<p>%s</p>" %restaurant.name
+
+	return output
+
 
 #Making an API Endpoint
 @app.route('/restaurants/<int:restaurant_id>/menu/JSON')
