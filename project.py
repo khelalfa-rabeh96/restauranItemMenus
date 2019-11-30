@@ -18,6 +18,13 @@ def showRestaurants():
 	all_restaurants = session.query(Restaurant).all()
 	return render_template('restaurants.html', all_restaurants = all_restaurants)
 
+#Making an API Endpoint
+@app.route('/restaurants/JSON')
+def restaurantsJSON():
+	all_restaurants = session.query(Restaurant).all()
+	return jsonify(Restaurants = [restaurant.serialize for restaurant in all_restaurants])
+
+
 @app.route('/restaurants/new', methods=['GET', 'POST'])
 def newRestaurant():
 	if request.method == 'POST':
