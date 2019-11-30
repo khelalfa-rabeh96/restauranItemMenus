@@ -33,7 +33,7 @@ def newRestaurant():
 		restaurant = Restaurant(name = name)
 		session.add(restaurant)
 		session.commit()
-		flash('New Restaurant Created Successfuly')
+		flash('New Restaurant  %s  Successfuly Created' % restaurant.name)
 		return redirect(url_for('showRestaurants'))
 
 	else:
@@ -51,7 +51,7 @@ def editRestaurant(restaurant_id):
 			restaurant.name = name
 			session.add(restaurant)
 			session.commit()
-			flash('A Restaurant Edited Successfuly')
+			flash('A Restaurant Edited Successfuly %s' % restaurant.name)
 
 		return redirect(url_for('showRestaurants'))
 
@@ -65,7 +65,7 @@ def deleteRestaurant(restaurant_id):
 	if request.method == 'POST':
 		session.delete(restaurant)
 		session.commit()
-		flash('A Restaurant Deleted Successfuly')
+		flash('%s Deleted Successfuly' % restaurant.name)
 		return redirect(url_for('showRestaurants'))
 
 	else:
@@ -109,7 +109,7 @@ def newMenuItem(restaurant_id):
 		 course = course ,restaurant_id = restaurant_id)
 		session.add(newItem)
 		session.commit()
-		flash('new menu item created!')
+		flash('new menu %s item created!' % newItem)
 		return redirect(url_for('restaurantMenu', restaurant_id = restaurant_id))
 
 	else:
