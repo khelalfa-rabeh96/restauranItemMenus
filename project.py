@@ -5,11 +5,34 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Restaurant, MenuItem
 
+#New Imports for login step
+from flask import session as login_session
+import random, string
+
+
+# IMPORTS FOR THIS STEP
+from oauth2client.client import flow_from_clientsecrets
+from oauth2client.client import FlowExchangeError
+import httplib2
+import json
+from flask import make_response
+import requests
+
+CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
+APPLICATION_NAME = "Restaurant Menu Application"
+
+
+
+
 engine = create_engine('sqlite:///restaurantmenu.db?check_same_thread=False')
 Base.metadata.bind = engine
 
 DBsession = sessionmaker(bind=engine)
 session = DBsession()
+
+
+
+
 
 @app.route('/')
 @app.route('/restaurants')
