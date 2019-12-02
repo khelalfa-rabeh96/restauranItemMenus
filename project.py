@@ -172,7 +172,10 @@ def gdisconnect():
 def showRestaurants():
 	
 	all_restaurants = session.query(Restaurant).all()
-	return render_template('restaurants.html', all_restaurants = all_restaurants)
+	if 'username' not in login_session:
+		return render_template('publicRestaurant.html', all_restaurants = all_restaurants)
+	else:
+		return render_template('restaurants.html', all_restaurants = all_restaurants)
 
 #Making an API Endpoint
 @app.route('/restaurants/JSON')
