@@ -119,6 +119,15 @@ def gconnect():
     output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     flash("you are now logged in as %s" % login_session['username'])
     print "done!"
+
+    user_id = getUserID(login_session['email'])
+    if not user_id :
+    	user_id = createUser(user_id)
+
+	login_session['user_id'] = user.id
+
+
+
     return output# Validate state token
     
 
