@@ -88,8 +88,15 @@ def gconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
-    
+    stored_access_token = login_session.get('access_token')
+    stored_gplus_id = login_session.get('gplus_id')
+    if stored_access_token is not None and gplus_id == stored_gplus_id:
+        response = make_response(json.dumps('Current user is already connected.'),
+                                 200)
+        response.headers['Content-Type'] = 'application/json'
+        return response
 
+    
    
 
 
