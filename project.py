@@ -38,12 +38,15 @@ def showLogin():
 	print 'the current session state is %s' % login_session['state']
 	return render_template('login.html', STATE=state)
 
-
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
+# Validate state token
+    if request.arg# Validate state token
+    if request.args.get('state') != login_session['state']:
+        response = make_response(json.dumps('Invalid state parameter.'), 401)
+        response.headers['Content-Type'] = 'application/json'
+        return response
     
-
-
 
 
 
