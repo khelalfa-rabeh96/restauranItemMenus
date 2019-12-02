@@ -3,7 +3,7 @@ app = Flask(__name__)
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Restaurant, MenuItem
+from database_setup import Base, Restaurant, MenuItem, User
 
 #New Imports for login step
 from flask import session as login_session
@@ -122,10 +122,10 @@ def gconnect():
 
     user_id = getUserID(login_session['email'])
     if not user_id :
-    	user_id = createUser(user_id)
+    	user_id = createUser(login_session)
 
 
-	login_session['user_id'] = user.id
+	login_session['user_id'] = user_id
 
 
 
@@ -251,12 +251,11 @@ def restaurantMenuJSON(restaurant_id):
 @app.route('/restaurants/<int:restaurant_id>')
 def restaurantMenu(restaurant_id):
 	restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
-	
 	creator = getUserInfo(restaurant.user_id)
 	items = session.query(MenuItem).filter_by(restaurant_id = restaurant_id).all()
 
 	if 'username' not in login_session or creator.id != login_session['user_id']:
-		return render_template('publicMenu.html', restaurant = restaurant, items = items, , creator= creator)
+		return render_template('publicMenu.html', restaurant = restaurant, items = items, creator= creator)
 	else:
 		return render_template('menu.html', restaurant = restaurant, items = items, creator= creator)
 
@@ -345,7 +344,7 @@ def getUserID(email):
 	except:
 		return None
 def getUserInfo(user_id):
-	user = session.query(User).filter_by(id = user_id)
+	user = session.query(User).filter_by(id = user_id).one()
 	return user
 
 
