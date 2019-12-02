@@ -18,7 +18,7 @@ import json
 from flask import make_response
 import requests
 
-CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
+CLIENT_ID = json.loads(open('your-path/client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Restaurant Menu Application"
 
 
@@ -29,6 +29,15 @@ Base.metadata.bind = engine
 
 DBsession = sessionmaker(bind=engine)
 session = DBsession()
+
+
+@app.route('/login')
+def showLogin():
+	state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
+	login_session['state'] = state
+	print 'the current session state is %s' % login_session['state']
+	return render_template('login.html', STATE=state)
+
 
 
 
