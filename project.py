@@ -124,6 +124,7 @@ def gconnect():
     if not user_id :
     	user_id = createUser(user_id)
 
+
 	login_session['user_id'] = user.id
 
 
@@ -247,9 +248,14 @@ def restaurantMenuJSON(restaurant_id):
 @app.route('/restaurants/<int:restaurant_id>')
 def restaurantMenu(restaurant_id):
 	restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
+	
+	creator = getUserInfo(restaurant.user_id)
 	items = session.query(MenuItem).filter_by(restaurant_id = restaurant_id).all()
 
-	return render_template('menu.html', restaurant = restaurant, items = items)
+	if 'username' not in login_session or creator.id != login_session['user_id']:
+		return render_template('publicMenu.html', restaurant = restaurant, items = items, , creator= creator)
+	else:
+		return render_template('menu.html', restaurant = restaurant, items = items, creator= creator)
 
 
 #Making an API Endpoint
