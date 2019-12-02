@@ -104,6 +104,43 @@
   </script>
 
 
- 
+  <script>
+    function signInCallback(authResult) {
+      if (authResult['code']) {
+
+        // Hide the sign-in button now that the user is authorized, for example:
+        $('#signinButton').attr('style', 'display: none');
+
+        // Send the code to the server
+        $.ajax({
+          type: 'POST',
+          url: '/gconnect?state={{STATE}}',
+          // Always include an `X-Requested-With` header in every AJAX request,
+          // to protect against CSRF attacks.
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          contentType: 'application/octet-stream; charset=utf-8',
+          processData: false,
+          data: authResult['code'],
+           success: function(result) {
+            // Handle or verify the server response.
+            if(result){
+              $('#result').html('Login Successful!</br>'+
+                result + '</br>Redirecting...');
+              setTimeout(function(){
+                window.location.href = '/restaurants'
+              }, 4000);
+            }
+          },
+        });
+      } else if(authResult['error']) {
+        // There was an error.
+        console.log('There was an error: '+ authResult['error']);
+      }else{
+        $('#result').html('Failed to make a server-side call.')
+      }
+    }
+  </script>
 </body>
 </html>
