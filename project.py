@@ -39,6 +39,10 @@ def showLogin():
 	return render_template('login.html', STATE=state)
 
 
+@app.route('/gconnect', methods=['POST'])
+def gconnect():
+    
+
 
 
 
