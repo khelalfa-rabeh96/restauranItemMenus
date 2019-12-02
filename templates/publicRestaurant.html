@@ -39,8 +39,8 @@
 		</div>
 		<div class="col-md-1"></div>
 	</div>
-	{% for restaurant in restaurants %}
-		<a href = "{{url_for('showMenu', restaurant_id = restaurant.id)}}">
+	{% for restaurant in all_restaurants %}
+		<a href = "{{url_for('restaurantMenu', restaurant_id = restaurant.id)}}">
 			<div class="row">
 				<div class="col-md-1"></div>
 					<div class="col-md-10 restaurant-list">
