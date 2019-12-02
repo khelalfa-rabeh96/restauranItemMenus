@@ -18,7 +18,7 @@ import json
 from flask import make_response
 import requests
 
-CLIENT_ID = json.loads(open('your_path/client_secrets.json', 'r').read())['web']['client_id']
+CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Restaurant Menu Application"
 
 
@@ -173,10 +173,13 @@ def restaurantsJSON():
 
 @app.route('/restaurants/new', methods=['GET', 'POST'])
 def newRestaurant():
+	if 'username' not in login_session:
+		return redirect('/login')
+
 	if request.method == 'POST':
 		name = request.form['name']
-		
-		restaurant = Restaurant(name = name)
+		user_id = login_session['user_id']
+		restaurant = Restaurant(name = name, user_id = user_id)
 		session.add(restaurant)
 		session.commit()
 		flash('New Restaurant  %s  Successfuly Created' % restaurant.name)
@@ -188,6 +191,9 @@ def newRestaurant():
 
 @app.route('/restaurants/<int:restaurant_id>/edit', methods=['GET', 'POST'])
 def editRestaurant(restaurant_id):
+	if 'username' not in login_session:
+		return redirect('/login')
+
 	restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
 
 	if request.method == 'POST':
@@ -206,6 +212,9 @@ def editRestaurant(restaurant_id):
 
 @app.route('/restaurants/<int:restaurant_id>/delete', methods=['GET', 'POST'])
 def deleteRestaurant(restaurant_id):
+	if 'username' not in login_session:
+		return redirect('/login')
+
 	restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
 	
 	if request.method == 'POST':
