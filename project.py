@@ -300,6 +300,19 @@ def deleteMenu(restaurant_id, menu_id):
 	
 
 
+def createUser(login_session):
+	name = login_session['username']
+	email = login_session['email']
+	picture = login_session['picture']
+	newUser = User(name=name, email=email, picture=picture)
+
+	session.add(newUser)
+	session.commit()
+	user = session.query(User).filter_by(email = email).one()
+	return user.id
+
+
+
 if __name__ == '__main__':
 	app.secret_key = 'super_secret_key'
 	app.debug = True
