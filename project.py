@@ -109,6 +109,7 @@ def gconnect():
     login_session['username'] = data['name']
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
+ 
 
     output = ''
     output += '<h1>Welcome, '
@@ -121,11 +122,12 @@ def gconnect():
     print "done!"
 
     user_id = getUserID(login_session['email'])
+
     if not user_id :
     	user_id = createUser(login_session)
 
 
-	login_session['user_id'] = user_id
+	login_session['user_id'] = user_id 
 
 
 
@@ -209,6 +211,12 @@ def editRestaurant(restaurant_id):
 
 	restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
 
+	if restaurant.user_id != login_session['user_id']:
+		return ''' <script>function myFucntion(){alert("you are not autorized
+					 to modify this restaurant. Please create your own restaurant
+					 in order to modify."")}
+				   </script><body onload="myFunction()">'''
+
 	if request.method == 'POST':
 		name = request.form['name']
 		if name:
@@ -230,6 +238,12 @@ def deleteRestaurant(restaurant_id):
 
 	restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
 	
+	if restaurant.user_id != login_session['user_id']:
+		return ''' <script>function myFucntion(){alert("you are not autorized
+					 to delete this restaurant. Please create your own restaurant
+					 in order to delete."")}
+				   </script><body onload="myFunction()">'''
+
 	if request.method == 'POST':
 		session.delete(restaurant)
 		session.commit()
@@ -254,7 +268,7 @@ def restaurantMenu(restaurant_id):
 	creator = getUserInfo(restaurant.user_id)
 	items = session.query(MenuItem).filter_by(restaurant_id = restaurant_id).all()
 
-	if 'username' not in login_session or creator.id != login_session['user_id']:
+	if 'username' not in login_session or creator.id != login_session['user_id'] :
 		return render_template('publicMenu.html', restaurant = restaurant, items = items, creator= creator)
 	else:
 		return render_template('menu.html', restaurant = restaurant, items = items, creator= creator)
@@ -343,6 +357,7 @@ def getUserID(email):
 		return user.id
 	except:
 		return None
+
 def getUserInfo(user_id):
 	user = session.query(User).filter_by(id = user_id).one()
 	return user
