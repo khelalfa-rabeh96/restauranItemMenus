@@ -284,6 +284,16 @@ def menuItemJSON(restaurant_id, menu_id):
 
 @app.route('/restaurants/<int:restaurant_id>/new/', methods=['GET', 'POST'])
 def newMenuItem(restaurant_id):
+	if 'username' not in login_session:
+		return redirect('/login')
+
+	restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+	if restaurant.user_id != login_session['user_id']:
+		return ''' <script>function myFucntion(){alert("you are not autorized
+					 to create a new menu to this restaurant. Please create your own restaurant
+					 in order to create a menu ."")}
+				   </script><body onload="myFunction()">'''
+
 	if request.method == 'POST':
 		
 
@@ -303,9 +313,18 @@ def newMenuItem(restaurant_id):
 
 @app.route('/restaurants/<int:restaurant_id>/<int:menu_id>/edit', methods=['GET', 'POST'])
 def editMenu(restaurant_id, menu_id):
-	
+	if 'username' not in login_session:
+		return redirect('/login')
+
 	editedItem = session.query(MenuItem).filter_by(id= menu_id).one()
-	
+	restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+	if restaurant.user_id != login_session['user_id']:
+		return ''' <script>function myFucntion(){alert("you are not autorized
+					 to modify this menu for this restaurant. Please create your own restaurant
+					 in order to modify a menu ."")}
+				   </script><body onload="myFunction()">'''
+
+
 	if request.method == "POST":
 		if request.form['name']:
 		    editedItem.name = request.form['name']
@@ -327,8 +346,19 @@ def editMenu(restaurant_id, menu_id):
 
 @app.route('/restaurants/<int:restaurant_id>/<int:menu_id>/delete', methods=['GET', 'POST'])
 def deleteMenu(restaurant_id, menu_id):
-	
+	if 'username' not in login_session:
+		return redirect('/login')
+
 	deletedItem = session.query(MenuItem).filter_by(id = menu_id ).one()
+	restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+	if login_session['user_id'] != restaurant.user_id:
+		return ''' <script>function myFucntion(){alert("you are not autorized
+					 to modify this menu for this restaurant. Please create your own restaurant
+					 in order to modify a menu ."")}
+				   </script><body onload="myFunction()">'''
+
+
+
 	if request.method == 'POST':	
 		session.delete(deletedItem)
 		session.commit()
